@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toastification/toastification.dart';
 import '../bloc/news_bloc.dart';
 import '../bloc/news_event.dart';
 import '../bloc/news_state.dart';
@@ -56,7 +57,17 @@ class _NewsPageState extends State<NewsPage> {
         }
 
         if (state is NewsErrorState) {
-          return Center(child: Text('Error: ${state.errorMessage}'));
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            toastification.show(
+              context: context,
+              title: const Text("Error"),
+              description: Text(state.errorMessage),
+              backgroundColor: Colors.redAccent,
+              type: ToastificationType.error,
+              animationDuration: const Duration(milliseconds: 400),
+            );
+          });
+          return const SizedBox();
         }
 
         if (state is NewsLoadedState) {

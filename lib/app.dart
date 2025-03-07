@@ -1,9 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:news_app_project/register/view/register_page.dart';
 import 'package:news_app_project/splash/view/splash_page.dart';
-import 'package:toastification/toastification.dart';
 
 import 'authentication/bloc/authentication_bloc.dart';
 import 'authentication/bloc/authentication_event.dart';
@@ -11,7 +8,6 @@ import 'authentication/bloc/authentication_state.dart';
 import 'authentication/services/token_service.dart';
 import 'home/view/home_page.dart';
 import 'authentication/services/authentication_repository.dart';
-import 'login/view/login_page.dart';
 import 'onboarding/onboarding_page.dart';
 
 class App extends StatelessWidget {

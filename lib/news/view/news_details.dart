@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:toastification/toastification.dart';
 
 import '../service/news_service.dart';
 
@@ -20,7 +19,17 @@ class NewsDetailPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              toastification.show(
+                context: context,
+                title: Text("Error"),
+                description: Text("${snapshot.error}"),
+                backgroundColor: Colors.redAccent,
+                type: ToastificationType.error,
+                animationDuration: Duration(milliseconds: 400),
+              );
+            });
+            return const SizedBox.shrink();
           } else if (!snapshot.hasData) {
             return const Center(child: Text('No news details available'));
           } else {
@@ -31,7 +40,8 @@ class NewsDetailPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (newsItem['pictures'] != null && newsItem['pictures'].isNotEmpty)
+                  if (newsItem['pictures'] != null &&
+                      newsItem['pictures'].isNotEmpty)
                     Image.network(newsItem['pictures'][0]['filePath']),
                   const SizedBox(height: 10),
                   Text(
@@ -48,7 +58,8 @@ class NewsDetailPage extends StatelessWidget {
                   if (newsItem['categoryTitle'] != null)
                     Text(
                       'Category: ${newsItem['categoryTitle']}',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                 ],
               ),
