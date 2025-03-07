@@ -5,6 +5,12 @@ plugins {
 }
 
 def localProperties = new Properties()
+def keyProperties = new Properties()
+def keyPropertiesFile = rootProject.file('key.properties')
+
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(new FileInputStream(keyPropertiesFile))
+}
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
