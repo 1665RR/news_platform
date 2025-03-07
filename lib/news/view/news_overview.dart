@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/news_bloc.dart';
 import '../bloc/news_event.dart';
 import '../bloc/news_state.dart';
+import 'news_tile.dart';
 
 class NewsPage extends StatefulWidget {
   NewsPage({super.key});
@@ -75,10 +76,13 @@ class _NewsPageState extends State<NewsPage> {
                   ),
                 );
               }
+              var newsItem = state.data[index];
 
-              return ListTile(
-                title: Text(state.data[index]['title']),
-                subtitle: Text(state.data[index]['description']),
+              return NewsTile(
+                title: newsItem['title'],
+                description: newsItem['description'],
+                onTap: () {
+                },
               );
             },
           );

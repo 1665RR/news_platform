@@ -62,18 +62,18 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       FetchNewsByIdEvent event,
       Emitter<NewsState> emit,
       ) async {
-    emit(NewsLoadingState());
+    emit(NewsDetailLoadingState());
 
     try {
       final data = await _newsRepository.getNewsById(event.newsId);
 
       if (data != null) {
-        emit(NewsLoadedState(data: data, hasReachedMax: true));
+        emit(NewsDetailLoadedState(newsData: data));
       } else {
-        emit(NewsErrorState(errorMessage: 'Failed to fetch news by ID'));
+        emit(NewsDetailErrorState(errorMessage: 'Failed to fetch news by ID'));
       }
     } catch (error) {
-      emit(NewsErrorState(errorMessage: 'Error: $error'));
+      emit(NewsDetailErrorState(errorMessage: 'Error: $error'));
     }
   }
 }

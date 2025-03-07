@@ -30,6 +30,10 @@ class _LoginFormState extends State<LoginForm> {
             ..showSnackBar(
                SnackBar(content: Text(errorMessage)),
             );
+        } else if(state.status.isSuccess) {
+          context.read<AuthenticationBloc>().add(
+            AuthenticationSubscriptionRequested(),
+          );
         }
       },
       child: Padding(
