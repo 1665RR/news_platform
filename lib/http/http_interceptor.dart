@@ -15,7 +15,6 @@ class AuthInterceptor implements InterceptorContract {
       request.headers['Authorization'] = 'Bearer $accessToken';
     }
 
-    // Set headers for HTTP methods
     request.headers['accept'] = '*/*';
     request.headers['Content-Type'] = 'application/json';
     request.headers['X-Api-Version'] = '1.0';
@@ -31,15 +30,13 @@ class AuthInterceptor implements InterceptorContract {
   }
 
   @override
-  Future<bool> shouldInterceptRequest() {
-    // TODO: implement shouldInterceptRequest
-    throw UnimplementedError();
+  Future<bool> shouldInterceptRequest() async {
+    return true;
   }
 
   @override
-  Future<bool> shouldInterceptResponse() {
-    // TODO: implement shouldInterceptResponse
-    throw UnimplementedError();
+  Future<bool> shouldInterceptResponse() async {
+    return true;
   }
 
 }

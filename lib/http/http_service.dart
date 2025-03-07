@@ -8,7 +8,7 @@ import 'http_interceptor.dart';
 
 class HttpService {
 
-  static final http.Client _httpClient = InterceptedClient.build(
+  static http.Client _httpClient = InterceptedClient.build(
     interceptors: [
       AuthInterceptor(),
     ],
@@ -46,7 +46,7 @@ class HttpService {
       url,
       headers: headers,
       body: body,
-    );
+    ).whenComplete(_handleCallComplete);
   }
 
   Future<http.Response> delete(
@@ -61,5 +61,14 @@ class HttpService {
       headers: headers,
       body: body,
     );
+  }
+
+  void _handleCallComplete() {
+      _httpClient = InterceptedClient.build(
+        interceptors: [
+          AuthInterceptor(),
+        ],
+        retryPolicy: ExpiredTokenRetryPolicy(),
+      );
   }
 }

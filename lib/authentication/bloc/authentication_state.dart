@@ -1,19 +1,23 @@
-abstract class AuthenticationState {}
 
-class AuthenticationInitial extends AuthenticationState {}
+import 'package:equatable/equatable.dart';
 
-class AuthenticationLoading extends AuthenticationState {}
+import '../services/authentication_repository.dart';
 
-class AuthenticationUnauthenticated extends AuthenticationState {}
+class AuthenticationState extends Equatable {
+  const AuthenticationState._({
+    this.status = AuthenticationStatus.unknown,
+  });
 
-class AuthenticationError extends AuthenticationState {
-  final String error;
+  const AuthenticationState.unknown() : this._();
 
-  AuthenticationError(this.error);
-}
+  const AuthenticationState.authenticated()
+      : this._(status: AuthenticationStatus.authenticated);
 
-class AuthenticationSuccess extends AuthenticationState {
-  final String token;
+  const AuthenticationState.unauthenticated()
+      : this._(status: AuthenticationStatus.unauthenticated);
 
-  AuthenticationSuccess({required this.token});
+  final AuthenticationStatus status;
+
+  @override
+  List<Object> get props => [status];
 }

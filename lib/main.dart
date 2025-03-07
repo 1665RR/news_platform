@@ -5,5 +5,5 @@ import 'http/api_service.dart';
 
 void main() {
   ApiService.init();
-  runApp(const App());
+  runApp(App());
 }

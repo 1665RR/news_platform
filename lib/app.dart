@@ -1,16 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:news_app_project/register/view/register_page.dart';
 import 'package:news_app_project/splash/view/splash_page.dart';
 import 'package:toastification/toastification.dart';
 
 import 'authentication/bloc/authentication_bloc.dart';
+import 'authentication/bloc/authentication_event.dart';
 import 'authentication/bloc/authentication_state.dart';
-import 'authentication/home/view/home_page.dart';
+import 'authentication/services/token_service.dart';
+import 'home/view/home_page.dart';
 import 'authentication/services/authentication_repository.dart';
-import 'authentication/view/login_page.dart';
+import 'login/view/login_page.dart';
+import 'onboarding/onboarding_page.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  App({super.key});
+
+  final _secureStorageService = SecureStorageService();
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +28,9 @@ class App extends StatelessWidget {
       child: BlocProvider(
         lazy: false,
         create: (context) => AuthenticationBloc(
-          context.read<AuthenticationRepository>(),
-        ),
+          authenticationRepository: context.read<AuthenticationRepository>(),
+          secureStorageService: _secureStorageService,
+        )..add(AuthenticationSubscriptionRequested()),
         child: const AppView(),
       ),
     );
@@ -48,32 +56,49 @@ class _AppViewState extends State<AppView> {
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
-            if (state is AuthenticationSuccess) {
-              _navigator.pushAndRemoveUntil<void>(
-                HomePage.route(),
-                (route) => false,
-              );
-            } else if (state is AuthenticationUnauthenticated) {
-              _navigator.pushAndRemoveUntil<void>(
-                LoginPage.route(),
-                (route) => false,
-              );
-            } else if (state is AuthenticationError) {
-              toastification.show(
-                context: context,
-                title: const Text("Authentication Error"),
-                description: Text(state.error),
-                backgroundColor: Colors.red,
-                icon: const Icon(Icons.error, color: Colors.white),
-                type: ToastificationType.error,
-                autoCloseDuration: const Duration(seconds: 4),
-              );
+            switch (state.status) {
+              case AuthenticationStatus.authenticated:
+                _navigator.pushAndRemoveUntil<void>(
+                  HomePage.route(),
+                      (route) => false,
+                );
+              case AuthenticationStatus.unauthenticated:
+                _navigator.pushAndRemoveUntil<void>(
+                  OnboardingPage.route(),
+                      (route) => false,
+                );
+              case AuthenticationStatus.unknown:
+                break;
             }
           },
-          child: child,
+          child: SafeArea(
+            child: Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Center(
+                      child: Text(
+                        'News App',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: child ?? const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         );
       },
-      onGenerateRoute: (_) => LoginPage.route(),
+      onGenerateRoute: (_) => SplashPage.route(),
     );
   }
 }

@@ -4,12 +4,16 @@ import 'package:news_app_project/authentication/services/token_service.dart';
 
 import '../../main.dart';
 import '../../utils/debug_long_print.dart';
+import '../../utils/parse_jwt_token.dart';
+import '../model/token_model.dart';
+import 'authentication_repository.dart';
 
 class ExpiredTokenRetryPolicy extends RetryPolicy {
   @override
   int get maxRetryAttempts => 2;
 
   final SecureStorageService _storageService = SecureStorageService();
+  final SecureStorageService _tokenService = SecureStorageService();
 
   /// determines whether the request should be retried based on an exception - right now it doesn't retry request
   @override
@@ -29,11 +33,33 @@ class ExpiredTokenRetryPolicy extends RetryPolicy {
     /// check if the response indicates the token has expired
     if (response.statusCode == 401) {
       debugLongPrint('Retrying request...');
+
+      /// attempt to refresh the access token
+      String? refreshToken = await _tokenService.getRefreshToken();
+      if (refreshToken == null) {
+        return false;
+      }
+
+      /// if the refresh token is expired, return failure
+      if (Jwt.isExpired(refreshToken)) {
+        return false;
+      } else {
+        /// call API to refresh the tokens
+        final token =
+            await AuthenticationRepository.refreshTokens(token: refreshToken);
+
+        /// if the new tokens are returned, save them and return success
+        if (token is TokenModel) {
+          _tokenService.saveToken(
+              jwt: token.accessToken, refreshToken: token.refreshToken);
+          return true;
+        } else {
+          return false;
+        }
+      }
     }
 
     /// no need to retry for non-401 responses
     return false;
   }
 }
-
-
