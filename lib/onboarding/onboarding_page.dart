@@ -26,22 +26,19 @@ class _LoginRegisterPageState extends State<OnboardingPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Display either login or register view based on `isLoginView`
-            if (isLoginView) LoginPage(),
-            if (!isLoginView) RegisterPage(),
-            SizedBox(height: 20),
-            // Toggle button to switch between views
+            isLoginView ? const LoginPage() : const RegisterPage(),
+            const SizedBox(height: 20),
             TextButton(
               onPressed: () {
                 setState(() {
-                  isLoginView = !isLoginView; // Toggle the view
+                  isLoginView = !isLoginView;
                 });
               },
               child: Text(
                 isLoginView
                     ? 'Don\'t have an account? Register'
                     : 'Already have an account? Login',
-                style: TextStyle(color: Colors.blue),
+                style: const TextStyle(color: Colors.blue),
               ),
             ),
           ],

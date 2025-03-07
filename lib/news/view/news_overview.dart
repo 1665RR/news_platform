@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/news_bloc.dart';
 import '../bloc/news_event.dart';
 import '../bloc/news_state.dart';
+import 'news_details.dart';
 import 'news_tile.dart';
 
 class NewsPage extends StatefulWidget {
@@ -82,6 +83,12 @@ class _NewsPageState extends State<NewsPage> {
                 title: newsItem['title'],
                 description: newsItem['description'],
                 onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => NewsDetailPage(newsId: newsItem['id']),
+                    ),
+                  );
                 },
               );
             },

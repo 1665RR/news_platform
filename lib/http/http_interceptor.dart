@@ -25,7 +25,6 @@ class AuthInterceptor implements InterceptorContract {
   @override
   Future<BaseResponse> interceptResponse(
       {required BaseResponse response}) async {
-    // You can handle responses here if needed, e.g., checking token expiration or other response status codes.
     return response;
   }
 

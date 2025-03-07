@@ -38,13 +38,19 @@ class NewsRepository {
     return null;
   }
 
-  Future<dynamic> getNewsById(String newsId) async {
-    final response = await ApiService.post(
-      "${ApiRoutes.news}/{$newsId}",
+  Future<Map<String, dynamic>?> getNewsById(String newsId) async {
+    final response = await ApiService.get(
+      "${ApiRoutes.news}/$newsId",
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+
+      if (jsonResponse['result'] != null) {
+        return jsonResponse['result'];
+      } else {
+        throw Exception('No result found in response');
+      }
     } else {
       throw Exception('Failed to load news');
     }
