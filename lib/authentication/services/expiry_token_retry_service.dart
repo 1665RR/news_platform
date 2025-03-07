@@ -11,7 +11,6 @@ class ExpiredTokenRetryPolicy extends RetryPolicy {
   @override
   int get maxRetryAttempts => 2;
 
-  final SecureStorageService _storageService = SecureStorageService();
   final SecureStorageService _tokenService = SecureStorageService();
 
   /// determines whether the request should be retried based on an exception - right now it doesn't retry request

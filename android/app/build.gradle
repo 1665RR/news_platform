@@ -58,10 +58,17 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(keyProperties['storeFile'])
-            storePassword keyProperties['storePassword']
-            keyAlias keyProperties['keyAlias']
-            keyPassword keyProperties['keyPassword']
+            if (System.getenv("CI")) {
+                storeFile file(System.getenv("CM_KEYSTORE_PATH"))
+                storePassword System.getenv("CM_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("CM_KEY_ALIAS")
+                keyPassword System.getenv("CM_KEY_PASSWORD")
+            } else {
+                storeFile file(keyProperties['storeFile'])
+                storePassword keyProperties['storePassword']
+                keyAlias keyProperties['keyAlias']
+                keyPassword keyProperties['keyPassword']
+            }
         }
     }
     buildTypes {
