@@ -36,7 +36,7 @@ FVM allows you to manage multiple versions of Flutter easily. To install FVM, fo
    ```bash
    git clone https://github.com/1665RR/news_platform.git
 
-5. **Navigate to the project directory: Change into the project folder:**
+5. **Navigate to the project directory:**
    ```bash
    cd news_app_project
 
